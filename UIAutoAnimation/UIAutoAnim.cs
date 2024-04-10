@@ -9,6 +9,7 @@ namespace Minh_Trong.Scripts.UIAutoAnimation
     {
         ZoomInZoomOut = 0,
         RotateInOutBack = 1,
+        SpinAround = 2,
     }
     
     public enum ChangeStatusType
@@ -228,6 +229,8 @@ namespace Minh_Trong.Scripts.UIAutoAnimation
 
         public void DeActive(bool deActiveGameObject)
         {
+            if(!gameObject.activeInHierarchy) return;
+            
             StartCoroutine(PlayDisAppear(deActiveGameObject));
         }
         
@@ -293,6 +296,9 @@ namespace Minh_Trong.Scripts.UIAutoAnimation
                 case LoopType.RotateInOutBack:
                     RotateInOutBack();
                     break;
+                case LoopType.SpinAround:
+                    SpinAround();
+                    break;
             }
         }
 
@@ -355,6 +361,26 @@ namespace Minh_Trong.Scripts.UIAutoAnimation
             sequence.Play();  
         }
 
+        private void SpinAround()
+        {
+            sequence = DOTween.Sequence();
+            
+            sequence.Pause();
+
+            sequence.SetAutoKill(false);
+
+            //sequence.SetDelay(0);
+
+            //sequence.Append(trans.DOLocalRotate(rotation, delayPerPhaseLoop).SetUpdate(!useTimeScale).SetEase(Ease.Linear));
+            
+            sequence.Append(trans.DOLocalRotate(new Vector3(0,0,360f), L_Duration / 4).SetRelative(true).SetUpdate(!useTimeScale).SetEase(Ease.Linear)).OnComplete(() =>
+            {
+                StartCoroutine(CheckSequence());
+            });
+            
+            sequence.Play();  
+        }
+        
         private IEnumerator CheckSequence()
         {
             if (L_LoopPerPhase > 0)
