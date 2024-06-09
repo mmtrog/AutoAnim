@@ -1,60 +1,66 @@
-namespace Minh_Trong.Scripts.UIAutoAnimation;
+using UnityEngine;
+using UnityEngine.UI;
 
-[DefaultExecutionOrder(order: -1)]
-[RequireComponent(typeof(Canvas))]
-[RequireComponent(typeof(CanvasScaler))]
-public class CustomCanvas : MonoBehaviour
+namespace AutoAnim.Scripts.Canvas
 {
-    [SerializeField]
-    private Vector2 aspectRange = new Vector2(0.45f, 0.75f);
+    using Canvas = UnityEngine.Canvas;
 
-    [SerializeField]
-    private Vector2 matchRange = new Vector2(0.3f, 1);
-
-    private Canvas       _canvas;
-    private CanvasScaler _canvasScaler;
-
-    public Canvas Canvas
+    [DefaultExecutionOrder(order: -1)]
+    [RequireComponent(typeof(Canvas))]
+    [RequireComponent(typeof(CanvasScaler))]
+    public class CustomCanvas : MonoBehaviour
     {
-        get
+        [SerializeField]
+        private Vector2 aspectRange = new Vector2(0.45f, 0.75f);
+
+        [SerializeField]
+        private Vector2 matchRange = new Vector2(0.3f, 1);
+
+        private Canvas       _canvas;
+        private CanvasScaler _canvasScaler;
+
+        public Canvas Canvas
         {
-            if (_canvas == null)
+            get
             {
-                _canvas = GetComponent<Canvas>();
+                if (_canvas == null)
+                {
+                    _canvas = GetComponent<Canvas>();
+                }
+                return _canvas;
             }
-            return _canvas;
         }
-    }
 
-    public CanvasScaler CanvasScaler
-    {
-        get
+        public CanvasScaler CanvasScaler
         {
-            if (_canvasScaler == null)
+            get
             {
-                _canvasScaler = GetComponent<CanvasScaler>();
+                if (_canvasScaler == null)
+                {
+                    _canvasScaler = GetComponent<CanvasScaler>();
+                }
+                return _canvasScaler;
             }
-            return _canvasScaler;
         }
-    }
 
-    public void SetupCamera()
-    {
-        if (Canvas.worldCamera == null)
+        public void SetupCamera()
         {
-            Canvas.worldCamera = Camera.main;
+            if (Canvas.worldCamera == null)
+            {
+                Canvas.worldCamera = Camera.main;
+            }
         }
-    }
 
-    private void Awake()
-    {
-        CanvasScaler.matchWidthOrHeight = GetMatch(Canvas.worldCamera.aspect);
-    }
+        private void Awake()
+        {
+            CanvasScaler.matchWidthOrHeight = GetMatch(Canvas.worldCamera.aspect);
+        }
 
-    private float GetMatch(float aspect)
-    {
-        aspect = Mathf.Clamp(aspect, aspectRange.x, aspectRange.y);
-        float percentage = (aspect - aspectRange.x) / (aspectRange.y - aspectRange.x);
-        return matchRange.x + percentage * (matchRange.y - matchRange.x);
+        private float GetMatch(float aspect)
+        {
+            aspect = Mathf.Clamp(aspect, aspectRange.x, aspectRange.y);
+            float percentage = (aspect - aspectRange.x) / (aspectRange.y - aspectRange.x);
+            return matchRange.x + percentage * (matchRange.y - matchRange.x);
+        }
     }
 }
